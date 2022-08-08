@@ -12,46 +12,49 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Optional;
 
-@ExtendWith({SpringExtension.class})
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class ProductRepositoryTests {
+class ProductRepositoryTests {
 
     @Autowired
     private ProductRepository productRepository;
 
-    private static File DATA_JSON = Paths.get("src", "test", "resources", "products.json").toFile();
+    private static final File DATA_JSON = Paths.get("src", "test", "resources", "products.json").toFile();
 
     @BeforeEach
-    public void setup() throws IOException {
+    void setup() throws IOException {
         // Deserialize products from JSON file to Product array
         Product[] products = new ObjectMapper().readValue(DATA_JSON, Product[].class);
 
         // Save each product to database
-        Arrays.stream(products).forEach(productRepository::save);
+        productRepository.saveAll(Arrays.asList(products));
     }
 
     @AfterEach
-    public void cleanup(){
+    void cleanup() {
         // Cleanup the database after each test
         productRepository.deleteAll();
     }
 
     @Test
     @DisplayName("Test product not found with non-existing id")
-    public void testProductNotFoundForNonExistingId(){
+    void testProductNotFoundForNonExistingId() {
         // Given two products in the database
 
         // When
-        Product retrievedProduct = productRepository.findProductById(100);
+        Optional<Product> retrievedProduct = productRepository.findById(100);
 
         // Then
-        Assertions.assertNull(retrievedProduct, "Product with id 100 should not exist");
+        assertThat(retrievedProduct).withFailMessage("Product with id 100 should not exist").isNotPresent();
     }
 
     @Test
     @DisplayName("Test product saved successfully")
-    public void testProductSavedSuccessfully(){
+    void testProductSavedSuccessfully() {
         // Prepare mock product
         Product newProduct = new Product("New Product", "New Product Description", 8);
 
@@ -66,7 +69,7 @@ public class ProductRepositoryTests {
 
     @Test
     @DisplayName("Test product updated successfully")
-    public void testProductUpdatedSuccessfully(){
+    void testProductUpdatedSuccessfully() {
         // Prepare the product
         Product productToUpdate = new Product(1, "Updated Product", "New Product Description", 20, 2);
 
@@ -81,7 +84,7 @@ public class ProductRepositoryTests {
 
     @Test
     @DisplayName("Test product deleted successfully")
-    public void testProductDeletedSuccessfully(){
+    void testProductDeletedSuccessfully() {
         // Given two products in the database
 
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -31,8 +32,9 @@ public class ProductsController {
      */
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable Integer id) {
-        Product product = productService.findById(id);
-        if (product != null) {
+        Optional<Product> productOptional = productService.findById(id);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
             try {
                 return ResponseEntity
                         .ok()
@@ -79,10 +81,11 @@ public class ProductsController {
     public ResponseEntity<Product> updateProduct(@PathVariable Integer id,
                                                  @RequestBody Product product,
                                                  @RequestHeader("If-Match") Integer ifMatch) {
-        Product existingProduct = productService.findById(id);
-        if (existingProduct == null) {
+        Optional<Product> existingProductOptional = productService.findById(id);
+        if (!existingProductOptional.isPresent()) {
             return ResponseEntity.notFound().build();
         } else {
+            Product existingProduct = existingProductOptional.get();
             if (!existingProduct.getVersion().equals(ifMatch)) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             } else {
@@ -118,8 +121,8 @@ public class ProductsController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Integer id) {
         logger.info("Deleting product with id:{}", id);
 
-        Product existingProduct = productService.findById(id);
-        if (existingProduct != null) {
+        Optional<Product> existingProductOptional = productService.findById(id);
+        if (existingProductOptional.isPresent()) {
             productService.delete(id);
             return ResponseEntity.ok().build();
         } else {

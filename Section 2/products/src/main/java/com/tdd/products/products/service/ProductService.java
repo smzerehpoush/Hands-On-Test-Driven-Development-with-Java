@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -20,28 +22,29 @@ public class ProductService {
 
     public Product update(Product product) {
         logger.info("Updating product with id:{}", product.getId());
-        Product existingProduct = productRepository.findProductById(product.getId());
-        if (existingProduct != null) {
+        Optional<Product> existingProductOptional = productRepository.findById(product.getId());
+        if (existingProductOptional.isPresent()) {
+            Product existingProduct = existingProductOptional.get();
             existingProduct.setName(product.getName());
             existingProduct.setDescription(product.getDescription());
             existingProduct.setQuantity(product.getQuantity());
-            existingProduct = productRepository.save(existingProduct);
+            return productRepository.save(existingProduct);
         } else {
             logger.error("Product with id {} could not be updated!", product.getId());
+            return null;
         }
-        return existingProduct;
     }
 
-    public Product findById(Integer id) {
+    public Optional<Product> findById(Integer id) {
         logger.info("Finding product by id:{}", id);
-        return productRepository.findProductById(id);
+        return productRepository.findById(id);
     }
 
     public void delete(Integer id) {
         logger.info("Deleting product with id:{}", id);
-        Product existingProduct = productRepository.findProductById(id);
-        if (existingProduct != null) {
-            productRepository.delete(existingProduct);
+        Optional<Product> existingProductOptional = findById(id);
+        if (existingProductOptional.isPresent()) {
+            productRepository.delete(existingProductOptional.get());
         } else {
             logger.error("Product with id {} could not be found!", id);
         }

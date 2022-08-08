@@ -2,7 +2,6 @@ package com.tdd.products.products.service;
 
 import com.tdd.products.products.model.Product;
 import com.tdd.products.products.repository.ProductRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,17 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.util.AssertionErrors;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class ProductServiceTest {
+class ProductServiceTest {
 
     @Autowired
     private ProductService productService;
@@ -30,30 +29,30 @@ public class ProductServiceTest {
 
     @Test
     @DisplayName("Find product with id successfully")
-    public void testFindProductById(){
+    void testFindProductById() {
         Product mockProduct = new Product(1, "Product", "Description", 10, 1);
 
-        doReturn(mockProduct).when(productRepository).findProductById(1);
+        doReturn(Optional.of(mockProduct)).when(productRepository).findById(1);
 
-        Product foundProduct = productService.findById(1);
+        Optional<Product> foundProduct = productService.findById(1);
 
-        Assertions.assertNotNull(foundProduct);
-        Assertions.assertSame("Product", foundProduct.getName());
+        assertThat(foundProduct).isPresent();
+        assertThat(foundProduct.get().getName()).isSameAs("Product");
     }
 
     @Test
     @DisplayName("Fail to find product with id")
-    public void testFailToFindProductById(){
-        doReturn(null).when(productRepository).findProductById(1);
+    void testFailToFindProductById() {
+        doReturn(Optional.empty()).when(productRepository).findById(1);
 
-        Product foundProduct = productService.findById(1);
+        Optional<Product> foundProduct = productService.findById(1);
 
-        Assertions.assertNull(foundProduct);
+        assertThat(foundProduct).isNotPresent();
     }
 
     @Test
     @DisplayName("Find all products")
-    public void testFindAllProducts(){
+    void testFindAllProducts() {
         Product firstProduct = new Product(1, "1st Product", "Description", 10, 1);
         Product secondProduct = new Product(2, "2nd Product", "Description", 10, 1);
 
@@ -61,47 +60,47 @@ public class ProductServiceTest {
 
         Iterable<Product> allProducts = productService.findAll();
 
-        Assertions.assertEquals(2, ((Collection<?>) allProducts).size());
+        assertThat(allProducts).hasSize(2);
     }
 
     @Test
     @DisplayName("Save new product successfully")
-    public void testSuccessfulProductSave(){
+    void testSuccessfulProductSave() {
         Product mockProduct = new Product(1, "Product", "Description", 10, 1);
 
         doReturn(mockProduct).when(productRepository).save(any());
 
         Product savedProduct = productService.save(mockProduct);
 
-        AssertionErrors.assertNotNull("Product should not be null", savedProduct);
-        Assertions.assertSame("Product", mockProduct.getName());
-        Assertions.assertSame(1, savedProduct.getVersion());
+        assertThat(savedProduct).withFailMessage("Product should not be null").isNotNull();
+        assertThat(mockProduct.getName()).isSameAs("Product");
+        assertThat(mockProduct.getVersion()).isSameAs(1);
     }
 
     @Test
     @DisplayName("Update an existing product successfully")
-    public void testUpdatingProductSuccessfully(){
+    void testUpdatingProductSuccessfully() {
         Product existingProduct = new Product(1, "Product", "Description", 10, 1);
         Product updatedProduct = new Product(1, "New Name", "Description", 20, 2);
 
-        doReturn(existingProduct).when(productRepository).findProductById(1);
+        doReturn(Optional.of(existingProduct)).when(productRepository).findById(1);
         doReturn(updatedProduct).when(productRepository).save(existingProduct);
 
         Product updateProduct = productService.update(existingProduct);
 
-        Assertions.assertEquals("New Name", updateProduct.getName());
+        assertThat(updateProduct.getName()).isEqualTo("New Name");
     }
 
     @Test
     @DisplayName("Fail to update an existing product")
-    public void testFailToUpdateExistingProduct(){
+    void testFailToUpdateExistingProduct() {
         Product mockProduct = new Product(1, "Product", "Description", 10, 1);
 
-        doReturn(null).when(productRepository).findProductById(1);
+        doReturn(Optional.empty()).when(productRepository).findById(1);
 
         Product updatedProduct = productService.update(mockProduct);
 
-        AssertionErrors.assertNull("Product should be null", updatedProduct);
+        assertThat(updatedProduct).withFailMessage("Product should be null").isNull();
     }
 
 }
