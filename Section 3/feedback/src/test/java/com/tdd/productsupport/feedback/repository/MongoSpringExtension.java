@@ -16,16 +16,17 @@ import java.util.Optional;
 public class MongoSpringExtension implements BeforeEachCallback, AfterEachCallback {
 
     // Path to where our test JSON files are stored.
-    private static Path JSON_FILE_PATH = Paths.get("src", "test", "resources", "data");
+    private static final Path JSON_FILE_PATH = Paths.get("src", "test", "resources", "data");
 
     // Will use to load JSON file as a list of objects
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * This callback method will be called before each test execution.
      * It is responsible for importing the JSON document, defined by the MongoDataFile annotation,
      * into the embedded MongoDB, through the provided MongoTemplate.
-     * @param context       The ExtensionContext, which provides access to the test method.
+     *
+     * @param context The ExtensionContext, which provides access to the test method.
      */
     @Override
     public void beforeEach(ExtensionContext context) {
@@ -54,10 +55,10 @@ public class MongoSpringExtension implements BeforeEachCallback, AfterEachCallba
      * It is responsible for dropping the test's MongoDB collection
      * so that the next test that runs is clean.
      *
-     * @param context       The ExtensionContext, which provides access to the test method.
+     * @param context The ExtensionContext, which provides access to the test method.
      */
     @Override
-    public void afterEach(ExtensionContext context){
+    public void afterEach(ExtensionContext context) {
         context.getTestMethod().ifPresent(method -> {
             // Load the MongoDataFile annotation value from the test method
             MongoTestDataFile mongoTestDataFile = method.getAnnotation(MongoTestDataFile.class);
@@ -70,8 +71,9 @@ public class MongoSpringExtension implements BeforeEachCallback, AfterEachCallba
 
     /**
      * Helper method that uses reflection to invoke the getMongoTemplate() method on the test instance.
-     * @param context   The ExtensionContext, which provides access to the test instance.
-     * @return          An optional MongoTemplate, if it exists.
+     *
+     * @param context The ExtensionContext, which provides access to the test instance.
+     * @return An optional MongoTemplate, if it exists.
      */
     private Optional<MongoTemplate> getMongoTemplate(ExtensionContext context) {
         Optional<Class<?>> testClass = context.getTestClass();
@@ -84,7 +86,7 @@ public class MongoSpringExtension implements BeforeEachCallback, AfterEachCallba
                 // Invoke the getMongoTemplate method on the test class
                 Optional<Object> testInstance = context.getTestInstance();
                 if (testInstance.isPresent()) {
-                    return Optional.of((MongoTemplate)method.invoke(testInstance.get(), null));
+                    return Optional.of((MongoTemplate) method.invoke(testInstance.get(), null));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

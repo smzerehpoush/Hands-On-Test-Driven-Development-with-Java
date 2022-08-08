@@ -1,14 +1,16 @@
 package com.tdd.productsupport.feedback;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class FeedbackApplicationTests {
 
-    @BeforeEach
-    public void setup(){
-
+    @Test
+    void testContextLoads() {
+        assertThat("Mahdiyar").startsWith("M");
     }
 
 }

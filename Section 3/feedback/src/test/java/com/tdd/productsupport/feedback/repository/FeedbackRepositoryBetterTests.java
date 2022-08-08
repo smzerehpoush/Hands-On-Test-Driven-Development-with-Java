@@ -1,6 +1,7 @@
 package com.tdd.productsupport.feedback.repository;
 
 import com.tdd.productsupport.feedback.model.Feedback;
+import lombok.Getter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,15 +14,12 @@ import java.util.List;
 
 @DataMongoTest
 @ExtendWith(MongoSpringExtension.class)
-public class FeedbackRepositoryBetterTests {
+class FeedbackRepositoryBetterTests {
 
     @Autowired
-    private MongoTemplate mongoTemplate;
-
     // Will only be used by the annotation
-    public MongoTemplate getMongoTemplate(){
-        return mongoTemplate;
-    }
+    @Getter
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     private FeedbackRepository feedbackRepository;
@@ -29,7 +27,7 @@ public class FeedbackRepositoryBetterTests {
     @Test
     @DisplayName("Find all feedback with better_data.json dataset")
     @MongoTestDataFile(value = "better_data.json", classType = Feedback.class, collectionName = "Feedback")
-    public void testGetFeedbackWithNewDataSet(){
+    void testGetFeedbackWithNewDataSet() {
         // When
         List<Feedback> feedbackList = feedbackRepository.findAll();
 
@@ -40,7 +38,7 @@ public class FeedbackRepositoryBetterTests {
     @Test
     @DisplayName("Find all feedback with data.json dataset")
     @MongoTestDataFile(value = "data.json", classType = Feedback.class, collectionName = "Feedback")
-    public void testGetFeedbackWithPreviousDataSet(){
+    void testGetFeedbackWithPreviousDataSet() {
         // When
         List<Feedback> feedbackList = feedbackRepository.findAll();
 
@@ -51,7 +49,7 @@ public class FeedbackRepositoryBetterTests {
     @Test
     @DisplayName("Save a new feedback with better_data.json dataset")
     @MongoTestDataFile(value = "better_data.json", classType = Feedback.class, collectionName = "Feedback")
-    public void testSavingNewFeedback(){
+    void testSavingNewFeedback() {
         // Prepare new feedback to save
         Feedback newFeedback = new Feedback("8", 2, 1, "POSTED", "This product is great!");
 

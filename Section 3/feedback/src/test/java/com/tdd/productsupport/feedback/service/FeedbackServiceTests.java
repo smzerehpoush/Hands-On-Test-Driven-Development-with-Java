@@ -15,11 +15,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class FeedbackServiceTests {
+class FeedbackServiceTests {
 
     @Autowired
     private FeedbackService feedbackService;
@@ -29,7 +30,7 @@ public class FeedbackServiceTests {
 
     @Test
     @DisplayName("Find feedback by id successfully")
-    public void testFindFeedbackById(){
+    void testFindFeedbackById() {
         // Prepare mock feedback
         Feedback mockFeedback = new Feedback("1", 1, 1, "POSTED", "This product is great!");
 
@@ -50,7 +51,7 @@ public class FeedbackServiceTests {
 
     @Test
     @DisplayName("Find feedback by product id successfully")
-    public void testFindFeedbackByProductId(){
+    void testFindFeedbackByProductId() {
         // Prepare mock feedback
         Feedback mockFeedback = new Feedback("1", 1, 1, "POSTED", "This product is great!");
 
@@ -72,7 +73,7 @@ public class FeedbackServiceTests {
 
     @Test
     @DisplayName("Find feedback by id failure")
-    public void testFindFeedbackByIdFailure(){
+    void testFindFeedbackByIdFailure() {
         // Prepare the mock repository call
         doReturn(Optional.empty()).when(feedbackRepository).findByProductId(1);
 
@@ -86,7 +87,7 @@ public class FeedbackServiceTests {
 
     @Test
     @DisplayName("Find all feedback successfully")
-    public void testFindAllFeedback(){
+    void testFindAllFeedback() {
         // Prepare mock feedback
         Feedback mockFeedback1 = new Feedback("1", 1, 1, "POSTED", "This product is great!");
         Feedback mockFeedback2 = new Feedback("2", 1, 2, "POSTED", "This product is awesome!");
@@ -104,7 +105,7 @@ public class FeedbackServiceTests {
 
     @Test
     @DisplayName("Save new feedback successfully")
-    public void testSaveNewFeedback(){
+    void testSaveNewFeedback() {
         // Prepare mock feedback
         Feedback feedbackToSave = new Feedback("1", 1, 1, "POSTED", "This product is great!");
         Feedback feedbackToReturn = new Feedback("1", 1, 1, "POSTED", "This product is great!");
@@ -122,14 +123,15 @@ public class FeedbackServiceTests {
 
     @Test
     @DisplayName("Delete feedback successfully")
-    public void testDeleteFeedbackSuccessfully(){
+    void testDeleteFeedbackSuccessfully() {
         // Prepare mock feedback
-        Feedback mockFeedback = new Feedback("1", 1, 1, "PUBLISHED", 2, "Update: This product is great!");
 
         // Prepare mock repository call
-        doReturn(Optional.of(mockFeedback)).when(feedbackRepository).findById("1");
+        doReturn(Optional.empty()).when(feedbackRepository).findById("1");
 
         // When
         feedbackService.delete("1");
+        Optional<Feedback> feedback = feedbackService.findById("1");
+        assertThat(feedback).isNotPresent();
     }
 }

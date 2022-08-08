@@ -6,7 +6,6 @@ import com.tdd.productsupport.feedback.service.FeedbackService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,13 +20,14 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FeedbackControllerTests {
+class FeedbackControllerTests {
 
     @MockBean
     private FeedbackService feedbackService;
@@ -37,7 +37,7 @@ public class FeedbackControllerTests {
 
     @Test
     @DisplayName("Feedback found for given id - GET /feedback/1")
-    public void testGetFeedbackById() throws Exception {
+    void testGetFeedbackById() throws Exception {
         Feedback mockFeedback = new Feedback("1", 1, 1, "POSTED", "This product is great!");
 
         doReturn(Optional.of(mockFeedback)).when(feedbackService).findById(mockFeedback.getId());
@@ -58,7 +58,7 @@ public class FeedbackControllerTests {
 
     @Test
     @DisplayName("Feedback not found for given id - GET /feedback/1")
-    public void testFeedbackFoundForProductId() throws Exception {
+    void testFeedbackFoundForProductId() throws Exception {
         // When
         doReturn(Optional.empty()).when(feedbackService).findById("1");
 
@@ -69,7 +69,7 @@ public class FeedbackControllerTests {
 
     @Test
     @DisplayName("All feedback found - GET /feedback")
-    public void testAllFeedbackFound() throws Exception {
+    void testAllFeedbackFound() throws Exception {
         Feedback firstFeedback = new Feedback("1", 1, 1, "POSTED", "This product is great!");
         Feedback secondFeedback = new Feedback("2", 1, 2, "PUBLISHED", "This product is awesome!");
 
@@ -87,15 +87,15 @@ public class FeedbackControllerTests {
 
     @Test
     @DisplayName("Save a new feedback - POST /feedback")
-    public void testSavingNewFeedback() throws Exception{
+    void testSavingNewFeedback() throws Exception {
         Feedback newFeedback = new Feedback("1", 1, 1, "POSTED", "This product is great!");
         Feedback mockedFeedback = new Feedback("1", 1, 1, "POSTED", 1, "This product is great!");
 
-        doReturn(mockedFeedback).when(feedbackService).save(ArgumentMatchers.any());
+        doReturn(mockedFeedback).when(feedbackService).save(any());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/feedback")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(new ObjectMapper().writeValueAsString(newFeedback)))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(new ObjectMapper().writeValueAsString(newFeedback)))
 
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))

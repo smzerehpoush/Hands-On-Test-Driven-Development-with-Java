@@ -1,8 +1,14 @@
 package com.tdd.productsupport.feedback.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "Feedback")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Feedback {
 
     private String id;
@@ -16,9 +22,6 @@ public class Feedback {
     private Integer version = 1;
 
     private String message;
-
-    public Feedback() {
-    }
 
     public Feedback(String id, Integer productId, Integer userId, String status, String message) {
         this.id = id;
@@ -34,54 +37,6 @@ public class Feedback {
         this.userId = userId;
         this.status = status;
         this.version = version;
-        this.message = message;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
         this.message = message;
     }
 

@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface FeedbackRepository extends MongoRepository<Feedback, String> {
 
-    Optional<Feedback> findByProductId(Integer id);
+    Optional<Feedback> findByProductId(Integer productId);
 }

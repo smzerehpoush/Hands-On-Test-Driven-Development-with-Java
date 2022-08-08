@@ -20,7 +20,7 @@ public @interface MongoTestDataFile {
     /**
      * Class type of objects stored in the MongoDB test file.
      */
-    Class classType();
+    Class<?> classType();
 
     /**
      * Name of the MongoDB collection for the test objects.
