@@ -13,7 +13,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @SpringBootTest
 @TestPropertySource(value = "classpath:test.properties")
-public class SupplyServiceTest {
+class SupplyServiceTest {
 
     @Autowired
     private SupplyService supplyService;
@@ -21,7 +21,7 @@ public class SupplyServiceTest {
     private WireMockServer wireMockServer;
 
     @BeforeEach
-    public void setupWireMockServer(){
+    void setupWireMockServer() {
         // initialize WireMock server
         wireMockServer = new WireMockServer(9090);
         wireMockServer.start();
@@ -45,26 +45,26 @@ public class SupplyServiceTest {
     }
 
     @AfterEach
-    public void stopWireMockServer(){
+    void stopWireMockServer() {
         wireMockServer.stop();
     }
 
     @Test
-    public void testGetSupplyRecordSuccessfully(){
+    void testGetSupplyRecordSuccessfully() {
         Optional<SupplyRecord> supplyRecord = supplyService.getSupplyRecord(1);
 
         Assertions.assertTrue(supplyRecord.isPresent(), "Supply record should exist");
     }
 
     @Test
-    public void testGetSupplyRecordFails(){
+    void testGetSupplyRecordFails() {
         Optional<SupplyRecord> supplyRecord = supplyService.getSupplyRecord(2);
 
         Assertions.assertFalse(supplyRecord.isPresent(), "Supply record should not exist");
     }
 
     @Test
-    public void testPurchaseProductSuccessful(){
+    void testPurchaseProductSuccessful() {
         Optional<SupplyRecord> supplyRecord = supplyService.purchaseProduct(1, 100);
 
         Assertions.assertTrue(supplyRecord.isPresent(), "Supply record should exist");

@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
-public class SupplyControllerTest {
+class SupplyControllerTest {
 
     @MockBean
     private SupplyService supplyService;
@@ -37,7 +37,7 @@ public class SupplyControllerTest {
 
     @Test
     @DisplayName("GET - /supply/{id} - Successful")
-    public void testGetSupplyByIdSuccessfully() throws Exception {
+    void testGetSupplyByIdSuccessfully() throws Exception {
         SupplyRecord supplyRecord = new SupplyRecord(1, "New Product", "Utilities", 100);
 
         doReturn(Optional.of(supplyRecord)).when(supplyService).getSupplyRecord(1);
@@ -57,7 +57,7 @@ public class SupplyControllerTest {
 
     @Test
     @DisplayName("GET - /supply/{id} - Failure")
-    public void testGetSupplyByIdFails() throws Exception {
+    void testGetSupplyByIdFails() throws Exception {
         doReturn(Optional.empty()).when(supplyService).getSupplyRecord(1);
 
         mockMvc.perform(get("/supply/{id}", 1))
@@ -67,14 +67,14 @@ public class SupplyControllerTest {
 
     @Test
     @DisplayName("POST - /supply/saleRecord - Successful")
-    public void testAddSaleRecordSuccessfully() throws Exception {
+    void testAddSaleRecordSuccessfully() throws Exception {
         SupplyRecord supplyRecord = new SupplyRecord(1, "New Product", "Utilities", 100);
 
         doReturn(Optional.of(supplyRecord)).when(supplyService).purchaseProduct(1, 10);
 
         mockMvc.perform(post("/supply/saleRecord")
-                .content(new ObjectMapper().writeValueAsString(new SaleRecord(1, 10)))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .content(new ObjectMapper().writeValueAsString(new SaleRecord(1, 10)))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
 
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))

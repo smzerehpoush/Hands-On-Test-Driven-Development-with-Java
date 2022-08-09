@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @TestPropertySource(value = "classpath:test.properties")
-public class SupplyServiceMappingTest {
+class SupplyServiceMappingTest {
 
     @Autowired
     private SupplyService supplyService;
@@ -23,32 +23,32 @@ public class SupplyServiceMappingTest {
     private WireMockServer wireMockServer;
 
     @BeforeEach
-    public void startWireMockServer(){
+    void startWireMockServer() {
         wireMockServer = new WireMockServer(9090);
         wireMockServer.start();
     }
 
     @AfterEach
-    public void stopWireMockServer(){
+    void stopWireMockServer() {
         wireMockServer.stop();
     }
 
     @Test
-    public void testGetSupplyRecordSuccessfully(){
+    void testGetSupplyRecordSuccessfully() {
         Optional<SupplyRecord> supplyRecord = supplyService.getSupplyRecord(1);
 
         Assertions.assertTrue(supplyRecord.isPresent(), "Supply record should exist");
     }
 
     @Test
-    public void testGetSupplyRecordFails(){
+    void testGetSupplyRecordFails() {
         Optional<SupplyRecord> supplyRecord = supplyService.getSupplyRecord(2);
 
         Assertions.assertFalse(supplyRecord.isPresent(), "Supply record should not exist");
     }
 
     @Test
-    public void testPurchaseProductSuccessful(){
+    void testPurchaseProductSuccessful() {
         Optional<SupplyRecord> supplyRecord = supplyService.purchaseProduct(1, 100);
 
         Assertions.assertTrue(supplyRecord.isPresent(), "Supply record should exist");

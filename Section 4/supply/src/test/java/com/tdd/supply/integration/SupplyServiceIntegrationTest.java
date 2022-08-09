@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(value = "classpath:test.properties")
-public class SupplyServiceIntegrationTest {
+class SupplyServiceIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -34,19 +34,19 @@ public class SupplyServiceIntegrationTest {
     private WireMockServer wireMockServer;
 
     @BeforeEach
-    public void setupWireMockServer(){
+    void setupWireMockServer() {
         wireMockServer = new WireMockServer(9090);
         wireMockServer.start();
     }
 
     @AfterEach
-    public void stopWireMockServer(){
+    void stopWireMockServer() {
         wireMockServer.stop();
     }
 
     @Test
     @DisplayName("GET /supply/1 - Successful")
-    public void testGetSupplyRecordSuccessfully() throws Exception {
+    void testGetSupplyRecordSuccessfully() throws Exception {
         // Perform the request
         mockMvc.perform(get("/supply/{id}", 1))
                 // Validate status and content type
@@ -65,7 +65,7 @@ public class SupplyServiceIntegrationTest {
 
     @Test
     @DisplayName("GET /supply/1 - Failure")
-    public void testGetSupplyRecordFailure() throws Exception {
+    void testGetSupplyRecordFailure() throws Exception {
         // Perform the request
         mockMvc.perform(get("/supply/{id}", 50))
 
@@ -75,11 +75,11 @@ public class SupplyServiceIntegrationTest {
 
     @Test
     @DisplayName("POST - /supply/saleRecord - Successful")
-    public void testAddNewSaleRecordSuccessfully() throws Exception {
+    void testAddNewSaleRecordSuccessfully() throws Exception {
         // Perform the request
         mockMvc.perform(post("/supply/saleRecord")
-                .content(new ObjectMapper().writeValueAsString(new SaleRecord(1, 100)))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .content(new ObjectMapper().writeValueAsString(new SaleRecord(1, 100)))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
 
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
